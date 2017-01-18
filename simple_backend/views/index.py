@@ -1,11 +1,9 @@
-from flask import Flask, render_template
+from flask import render_template, Blueprint
+from simple_backend import app
 
-app = Flask(__name__)
+index_page = Blueprint('index', __name__)
 
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html')
-
-if __name__ == '__main__':
-    app.run(debug = True)
