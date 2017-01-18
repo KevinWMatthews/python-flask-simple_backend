@@ -1,0 +1,2 @@
+graft simple_backend/templates
+graft simple_backend/static

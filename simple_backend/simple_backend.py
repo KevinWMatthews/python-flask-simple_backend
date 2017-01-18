@@ -9,4 +9,7 @@ app.config.update(dict(
 # define this environment variable to point to a settings file
 app.config.from_envvar('SIMPLE_BACKEND_SETTINGS', silent=True)
 
-print app.config.get('SOME_SETTING')
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html')
