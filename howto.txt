@@ -1,5 +1,5 @@
 # First, start a virtual environment
-venv                                # If not already created
+virtualenv venv                     # If not already created
 source venv/bin/activate            # Activate the virtual environment
 
 # To install everything this app needs, run:
