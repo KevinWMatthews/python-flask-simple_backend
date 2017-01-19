@@ -20,6 +20,8 @@
 			$('#fileupload').fileupload({
 				dataType: 'json',
 				done: function (e, data) {
+					data.context.text('Upload finished!');	// This way, or with <p/> as below?
+
 					console.log("DONE");
 					console.log(data);
 					$.each(data.result.files, function (index, file) {
@@ -28,18 +30,22 @@
 					});
 				},
 				error: function (e, data) {
-					$('<p/>').text(e.readyState).appendTo(document.body);
-					$('<p/>').text(data).appendTo(document.body);
-					console.log("ERROR")
+					$('<p/>').text('Upload error!').appendTo(document.body);
+					console.log("Upload error: " + data);
 					console.log(e);
-					console.log(data);
 				},
+				// This increments the progress bar.
 				progressall: function (e, data) {
 					var progress = parseInt(data.loaded / data.total * 100, 10);
 					$('#progress .bar').css(
 						'width',
 						progress + '%'
 					);
+				},
+				// Add a status box to the page during the upload.
+				add: function (e, data) {
+					data.context = $('<p/>').text('Uploading...').appendTo(document.body);
+					data.submit();
 				}
 			});
 		});
