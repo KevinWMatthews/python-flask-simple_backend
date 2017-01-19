@@ -15,9 +15,19 @@ $(function () {
 	$('#fileupload').fileupload({
 		dataType: 'json',
 		done: function (e, data) {
+			console.log("DONE");
+			console.log(data);
 			$.each(data.result.files, function (index, file) {
 				$('<p/>').text(file.name).appendTo(document.body);
+				console.log(file.name);
 			});
+		},
+		error: function (e, data) {
+			$('<p/>').text(e.readyState).appendTo(document.body);
+			$('<p/>').text(data).appendTo(document.body);
+			console.log("ERROR")
+			console.log(e);
+			console.log(data);
 		}
 	});
 });
