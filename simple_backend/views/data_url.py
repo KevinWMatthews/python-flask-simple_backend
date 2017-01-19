@@ -27,7 +27,16 @@ def data_url():
         #  return '{readyState: 4, responseText: "success", status: 200, statusText: "OK"}'
         #  return '<html><body>data_url html</body></html'   #render_template('upload.html')
         #  return '{ files: [ { error: 0, name: "thumb2.jpg", } ] }'
-        return '{ error:0, length:42 }'
+        #  return '{ error:0, length:42 }'
+        return 'files: [{ \
+"deleteType": "DELETE", \
+"deleteUrl": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg", \
+"name": "coffee.jpg", \
+"size": 9805, \
+"thumbnailUrl": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg.80x80.jpg", \
+"type": "image/jpeg", \
+"url": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg" \
+}]'
 
     try:
         print 'In data_url.py, %s' % request.method
