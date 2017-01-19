@@ -1,4 +1,5 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, abort
+from jinja2 import TemplateNotFound
 from simple_backend import app
 
 default_view = Blueprint('index', __name__)
