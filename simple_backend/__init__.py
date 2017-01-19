@@ -11,7 +11,9 @@ app.config.from_envvar('SIMPLE_BACKEND_SETTINGS', silent=True)
 from views.default import default_view
 # If you need to do something special, create and import a custom view.
 from views.upload import upload_view
+from views.data_url import data_url_view
 
 # Register all pages with blueprint.
 app.register_blueprint(default_view)
 app.register_blueprint(upload_view)
+app.register_blueprint(data_url_view)
