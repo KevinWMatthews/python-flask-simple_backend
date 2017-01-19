@@ -42,11 +42,17 @@
 						progress + '%'
 					);
 				},
-				// Add a status box to the page during the upload.
+				// Add a button to allow the upload to start.
+				// Then add a status box to the page during the upload.
 				add: function (e, data) {
-					data.context = $('<p/>').text('Uploading...').appendTo(document.body);
-					data.submit();
-				}
+					data.context = $('<button/>').text('Upload')
+						.appendTo(document.body)
+						.click(function () {
+							data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+							data.submit();
+						}
+					);
+				},
 			});
 		});
 	</script>
