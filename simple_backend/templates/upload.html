@@ -33,10 +33,11 @@
 
 					console.log("DONE");
 					console.log(data);
-					$.each(data.result.files, function (index, file) {
-						$('<p/>').text(file.name).appendTo(document.body);
-						console.log(file.name);
-					});
+					$('<p/>').text('Done!').appendTo(document.body);
+					// $.each(data.result.files, function (index, file) {
+					// 	$('<p/>').text(file.name).appendTo(document.body);
+					// 	console.log(file.name);
+					// });
 				},
 				//error: function (e, data) {
 				//	$('<p/>').text('Upload error!').appendTo(document.body);

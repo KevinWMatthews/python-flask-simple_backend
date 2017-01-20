@@ -37,10 +37,12 @@ def data_url():
         file_name = data_file.filename
 
         print data_file.filename
-        print data_file.stream
+        # print data_file.stream
         print data_file.content_type
-        print data_file.content_length
+        content_length = data_file.content_length
+        print content_length
         data_file.save('%s/%s' % (UPLOAD_FOLDER, UPLOAD_FILENAME))     # buffer_size=16384
+        print data_file.content_length
 
         # save_file(data_file, file_name)
         # file_size = get_file_size(file_name)
