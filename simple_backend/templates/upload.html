@@ -6,67 +6,67 @@
 	<title>jQuery File Upload Example</title>
 </head>
 <body>
-	<input id="fileupload" type="file" name="upload_file" accept="image/jpeg" data-url="data_url" multiple>
+	<input id="fileupload" type="file" name="upload_file" accept=".swu" data-url="data_url" multiple>
 	<div id="progress">
 		<div class="bar" style="width: 0%;"></div>
 	</div>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="/static/jquery.min.js"></script>
 	<script src="/static/vendor/jquery.ui.widget.js"></script>
 	<script src="/static/jquery.iframe-transport.js"></script>
 	<script src="/static/jquery.fileupload.js"></script>
-	<script>
+	<script src="/static/upload.js">
 		$(function () {
 			$('#fileupload').fileupload({
-				dataType: 'json',
-				// This won't be thrown if the server returns valid json.
-				// I imagine it's most useful if the server returns bad json.
-				// Does error also hit if the server returns invalid json?
+				dataType: 'json',		// Expect the server to return valid json.
+
+				add: function (e, data) {
+					// Add a button to allow the upload to start.
+					// Then add a status message to the page during the upload.
+					data.context = $('<button/>').text('Upload')
+						.appendTo(document.body)
+						.click(function () {
+							// This text replaces the Upload button
+							console.log('Upload add: user clicked upload button.');
+							data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+							data.submit();
+						}
+					);
+				},
+
+				submit: function (e, data) {
+					//TODO check if the file exists.
+					//TODO reject files with wrong extension?
+					console.log('Upload submit: ' + data.originalFiles[0].name);
+					$('<p/>').text('Sending file to server: ' + data.originalFiles[0].name).appendTo(document.body);
+				},
+
+				// The docs say that this generally does not hit because the error callback hits when
+				// the server returns a valid HTTP response? But it seem to be hitting....
 				fail: function (e, data) {
-					console.log('fail');
-					console.log(e);
-					console.log(data);
-					console.log(data.textStatus);
-				},
-				done: function (e, data) {
-					data.context.text('Upload finished!');	// This way, or with <p/> as below?
-
-					console.log("DONE");
-					console.log(data);
-					$('<p/>').text('Done!').appendTo(document.body);
-					console.log(data.result);
-					console.log(data.result.name);
-					console.log(data.result.url);
-
-					$('<p/>').text(data.result.name).appendTo(document.body);
-					$('<p/>').text(data.result.url).appendTo(document.body);
+					console.log('Upload fail: ' + data.textStatus + ' ' + data.errorThrown);
+					$('<p/>').text('Upload failed: ' + data.errorThrown).appendTo(document.body);
 				},
 
-				error: function (e, data) {
-					$('<p/>').text('Upload error!').appendTo(document.body);
-					console.log("Upload error: " + data);
-					console.log(e);
-				},
-				// This increments the progress bar.
+				// Not sure about the distinction between the error and fail callbacks,
+				// but fail is giving a more descriptive errorThrown message.
+				/* error: function (e, data) {
+				 * 	$('<p/>').text('Upload error: ' + data.errorThrown).appendTo(document.body);
+				 * 	console.log('Upload: ' + data.textStatus + ' ' + data.errorThrown);
+				}, */
+
 				progressall: function (e, data) {
+					// This increments the progress bar.
 					var progress = parseInt(data.loaded / data.total * 100, 10);
-					$('#progress .bar').css(
+					$('#progress .bar').css(	// Why does '#progress .bar' need a space?
 						'width',
 						progress + '%'
 					);
 				},
-				// Add a button to allow the upload to start.
-				// Then add a status box to the page during the upload.
-				add: function (e, data) {
-					// data.context = $('<button/>').text('Upload')
-					// 	.appendTo(document.body)
-					// 	.click(function () {
-					// 		data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-					// 		data.submit();
-					// 	}
-					// );
-					data.context = $('<p/>').text('Uploading...').appendTo(document.body);
-					data.submit();
+
+				done: function (e, data) {
+					console.log('Upload file - ' + data.result.name + ': ' + data.textStatus);
+					$('<p/>').text('Upload finished!').appendTo(document.body);
 				},
 			});
 		});
