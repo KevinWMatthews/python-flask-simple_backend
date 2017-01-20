@@ -50,6 +50,13 @@ def data_url():
         file_url = url_for('upload', file_name=file_name)   #download
         # providing the thumbnail url is optional
         # thumbnail_url = url_for('thumbnail', file_name=file_name)
+        response = jsonify(name=file_name,
+                       size=file_size,
+                       url=file_url)
+        print response.status
+        print response.headers
+        print response.get_data()
+        # jsonify wraps the arguments in json and returns a flask.Response() object. Use this!
         return jsonify(name=file_name,
                        size=file_size,
                        url=file_url)#,

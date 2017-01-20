@@ -34,16 +34,16 @@
 					console.log("DONE");
 					console.log(data);
 					$('<p/>').text('Done!').appendTo(document.body);
-					// $.each(data.result.files, function (index, file) {
-					// 	$('<p/>').text(file.name).appendTo(document.body);
-					// 	console.log(file.name);
-					// });
+					console.log(data.result);
+					console.log(data.result.name);
+
+					$('<p/>').text(data.result.name).appendTo(document.body);
 				},
-				//error: function (e, data) {
-				//	$('<p/>').text('Upload error!').appendTo(document.body);
-				//	console.log("Upload error: " + data);
-				//	console.log(e);
-				//},
+				error: function (e, data) {
+					$('<p/>').text('Upload error!').appendTo(document.body);
+					console.log("Upload error: " + data);
+					console.log(e);
+				},
 				// This increments the progress bar.
 				progressall: function (e, data) {
 					var progress = parseInt(data.loaded / data.total * 100, 10);
