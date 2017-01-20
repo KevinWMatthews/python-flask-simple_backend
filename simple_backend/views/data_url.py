@@ -1,5 +1,4 @@
-from flask import render_template, Blueprint, abort, request, url_for, jsonify
-from jinja2 import TemplateNotFound
+from flask import Blueprint, request, url_for, jsonify
 from simple_backend import app
 
 data_url_view = Blueprint('data_url', __name__)
@@ -7,57 +6,38 @@ data_url_view = Blueprint('data_url', __name__)
 UPLOAD_FOLDER = './data'
 UPLOAD_FILENAME = 'update.file'
 
-#  if 'coffee.jpg' not in request.files:
-#  print 'POST request does not contain file!'
-#TODO  this return shouldn't return anything?
-#  return '<html><body>data_url html</body></html'   #render_template('upload.html')   # ?
-
-#  if file.filename == '':
-#  print 'file has no filename!'
-#  return '<html><body>data_url html</body></html'   #render_template('upload.html')   # ?
-
-@app.route('/data_url', methods=['POST', 'GET'])
+@app.route('/data_url', methods=['POST'])
 def data_url():
+    """
+    # The original sample code listed the available files when
+    # the user browsed to this url.
+    # We aren't doing this, but I've retained and edited this for future use.
+    # This returns javascript which the javascript/html could display nicely.
+    # Before using this, import os and add GET to the list of methods for this URL.
     if request.method == 'GET':
-        # we are expected to return a list of dicts with infos about the already available files:
-        file_infos = []
-        for file_name in list_files():
-            file_url = url_for('download', file_name=file_name)
-            file_size = get_file_size(file_name)
-            file_infos.append(dict(name=file_name,
-                                   size=file_size,
-                                   url=file_url))
-        return jsonify(files=file_infos)
+        file_info = []
+        file_names = os.listdir(UPLOAD_FOLDER)
+        for file_name in file_names:
+            file_info.append(dict(name = file_name))
 
+        return jsonify(files=file_info)
+    """
+
+    # Save the uploaded file and return a flask Response() that contains json with file details.
+    # Return whatever json the uploadl.html javascript expects.
     if request.method == 'POST':
-        # we are expected to save the uploaded file and return some infos about it:
-        #                              vvvvvvvvv   this is the name for input type=file
-        print request.files
-        data_file = request.files.get('files[]')
+        # The uploaded file is accessible an ImmutableMultiDict that contains a FileStorage object.
+        # For documentation on this object, see
+        # http://mitsuhiko.pocoo.org/werkzeug-docs/utils.html
+        # and search for werkzeug.FileStorage
+        data_file = request.files.get('upload_file')        # The name from the html fileupload input
         file_name = data_file.filename
 
-        print data_file.filename
-        # print data_file.stream
-        print data_file.content_type
-        content_length = data_file.content_length
-        print content_length
-        data_file.save('%s/%s' % (UPLOAD_FOLDER, UPLOAD_FILENAME))     # buffer_size=16384
-        print data_file.content_length
+        #TODO verify file extension, etc.
 
-        # save_file(data_file, file_name)
-        # file_size = get_file_size(file_name)
-        file_size = 42
-        file_url = url_for('upload', file_name=file_name)   #download
-        # providing the thumbnail url is optional
-        # thumbnail_url = url_for('thumbnail', file_name=file_name)
-        response = jsonify(name=file_name,
-                       size=file_size,
-                       url=file_url)
-        print response.status
-        print response.headers
-        print response.get_data()
+        data_file.save('%s/%s' % (UPLOAD_FOLDER, UPLOAD_FILENAME))  # buffer_size defautls to 16384
+
         # jsonify wraps the arguments in json and returns a flask.Response() object. Use this!
-        return jsonify(name=file_name,
-                       size=file_size,
-                       url=file_url)#,
-                       #thumbnail=thumbnail_url)
+        # For documentation on this object, see
+        # http://flask.pocoo.org/docs/0.12/api/#flask.Response
+        return jsonify(name = file_name)

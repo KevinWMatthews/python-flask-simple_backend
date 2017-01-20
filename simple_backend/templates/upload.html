@@ -6,7 +6,7 @@
 	<title>jQuery File Upload Example</title>
 </head>
 <body>
-	<input id="fileupload" type="file" name="files[]" accept="image/jpeg" data-url="data_url" multiple>
+	<input id="fileupload" type="file" name="upload_file" accept="image/jpeg" data-url="data_url" multiple>
 	<div id="progress">
 		<div class="bar" style="width: 0%;"></div>
 	</div>
@@ -36,9 +36,12 @@
 					$('<p/>').text('Done!').appendTo(document.body);
 					console.log(data.result);
 					console.log(data.result.name);
+					console.log(data.result.url);
 
 					$('<p/>').text(data.result.name).appendTo(document.body);
+					$('<p/>').text(data.result.url).appendTo(document.body);
 				},
+
 				error: function (e, data) {
 					$('<p/>').text('Upload error!').appendTo(document.body);
 					console.log("Upload error: " + data);
