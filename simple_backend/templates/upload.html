@@ -6,7 +6,7 @@
 	<title>jQuery File Upload Example</title>
 </head>
 <body>
-	<input id="fileupload" type="file" name="files[]" accept="image/jpg" data-url="data_url" multiple>
+	<input id="fileupload" type="file" name="files[]" accept="image/jpeg" data-url="data_url" multiple>
 	<div id="progress">
 		<div class="bar" style="width: 0%;"></div>
 	</div>
@@ -19,6 +19,15 @@
 		$(function () {
 			$('#fileupload').fileupload({
 				dataType: 'json',
+				// This won't be thrown if the server returns valid json.
+				// I imagine it's most useful if the server returns bad json.
+				// Does error also hit if the server returns invalid json?
+				fail: function (e, data) {
+					console.log('fail');
+					console.log(e);
+					console.log(data);
+					console.log(data.textStatus);
+				},
 				done: function (e, data) {
 					data.context.text('Upload finished!');	// This way, or with <p/> as below?
 
@@ -29,11 +38,11 @@
 						console.log(file.name);
 					});
 				},
-				error: function (e, data) {
-					$('<p/>').text('Upload error!').appendTo(document.body);
-					console.log("Upload error: " + data);
-					console.log(e);
-				},
+				//error: function (e, data) {
+				//	$('<p/>').text('Upload error!').appendTo(document.body);
+				//	console.log("Upload error: " + data);
+				//	console.log(e);
+				//},
 				// This increments the progress bar.
 				progressall: function (e, data) {
 					var progress = parseInt(data.loaded / data.total * 100, 10);

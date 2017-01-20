@@ -7,6 +7,9 @@ venv/
 # Ignore python configuration stuff?
 *.egg-info
 
+# Ignore data uploaded by the user
+data/
+
 # Ignore Sublime Text files
 *.sublime-workspace
 

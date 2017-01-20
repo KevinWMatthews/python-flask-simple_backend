@@ -1,11 +1,11 @@
-from flask import render_template, Blueprint, abort, request
+from flask import render_template, Blueprint, abort, request, url_for, jsonify
 from jinja2 import TemplateNotFound
-from werkzeug.datastructures import ImmutableMultiDict
 from simple_backend import app
 
 data_url_view = Blueprint('data_url', __name__)
 
-UPLOAD_FOLDER = '~'
+UPLOAD_FOLDER = './data'
+UPLOAD_FILENAME = 'update.file'
 
 #  if 'coffee.jpg' not in request.files:
 #  print 'POST request does not contain file!'
@@ -18,28 +18,37 @@ UPLOAD_FOLDER = '~'
 
 @app.route('/data_url', methods=['POST', 'GET'])
 def data_url():
-    if request.method == 'POST':
-        print request.files
-        # The js in the html sets 'dataType' to 'json', so we should return json.
-        #  return 42
-        #  return '{ error:0,name:"bob"}'
-        #  return 'success'
-        #  return '{readyState: 4, responseText: "success", status: 200, statusText: "OK"}'
-        #  return '<html><body>data_url html</body></html'   #render_template('upload.html')
-        #  return '{ files: [ { error: 0, name: "thumb2.jpg", } ] }'
-        #  return '{ error:0, length:42 }'
-        return 'files: [{ \
-"deleteType": "DELETE", \
-"deleteUrl": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg", \
-"name": "coffee.jpg", \
-"size": 9805, \
-"thumbnailUrl": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg.80x80.jpg", \
-"type": "image/jpeg", \
-"url": "http://jquery-file-upload.appspot.com/image%2Fjpeg/2479138168/coffee.jpg" \
-}]'
+    if request.method == 'GET':
+        # we are expected to return a list of dicts with infos about the already available files:
+        file_infos = []
+        for file_name in list_files():
+            file_url = url_for('download', file_name=file_name)
+            file_size = get_file_size(file_name)
+            file_infos.append(dict(name=file_name,
+                                   size=file_size,
+                                   url=file_url))
+        return jsonify(files=file_infos)
 
-    try:
-        print 'In data_url.py, %s' % request.method
-        return '<html><body>data_url html</body></html'   #render_template('upload.html')
-    except TemplateNotFound:
-        abort(404)
+    if request.method == 'POST':
+        # we are expected to save the uploaded file and return some infos about it:
+        #                              vvvvvvvvv   this is the name for input type=file
+        print request.files
+        data_file = request.files.get('files[]')
+        file_name = data_file.filename
+
+        print data_file.filename
+        print data_file.stream
+        print data_file.content_type
+        print data_file.content_length
+        data_file.save('%s/%s' % (UPLOAD_FOLDER, UPLOAD_FILENAME))     # buffer_size=16384
+
+        # save_file(data_file, file_name)
+        # file_size = get_file_size(file_name)
+        file_size = 42
+        file_url = url_for('upload', file_name=file_name)   #download
+        # providing the thumbnail url is optional
+        # thumbnail_url = url_for('thumbnail', file_name=file_name)
+        return jsonify(name=file_name,
+                       size=file_size,
+                       url=file_url)#,
+                       #thumbnail=thumbnail_url)
